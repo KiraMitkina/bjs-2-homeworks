@@ -1,54 +1,93 @@
-function Student(name, gender, age) {
-  this.name = name;
-  this.gender = gender;
-  this.age = age;
-}
-
-let student1 = new Student("Alex", "male", 30);
-let student2 = new Student("Olya", "female", 35);
-let student3 = new Student("Lena", "female", 25);
-let student4 = new Student("Vova", "male", 19);
-
-Student.prototype.setSubject = function (subjectName) {
-  this.subject = subjectName;
-}
-
-Student.prototype.addMark = function (mark) {
-  if (this.marks === undefined) {
-      this.marks = [];
-      this.marks.push(mark);
-  } else {
-      this.marks.push(mark);
-  }
-}
-
-Student.prototype.addMarks = function (...marks) {
-  if (this.marks === undefined) {
-      this.marks = [];
-      for (let arg of marks) {
-        this.marks.push(arg);
+class PrintEditionItem {
+    constructor (name, releaseDate, pagesCount) {
+      this.name = name;
+      this.releaseDate = releaseDate;
+      this.pagesCount = pagesCount;
+      this.state = 100;
+      this.type = null;   
+    }
+  
+    fix() {
+      this.state *= 1.5;
+    }
+  
+    set state(newState) {
+      if (newState < 0) {
+        this._state = 0
+      } else if (newState > 100) {
+        this._state = 100
+      } else {
+        return this._state = newState 
       }
-  } else {
-      for (let arg of marks) {
-        this.marks.push(arg);
-      }
-  }
+    }
+  
+    get state() {
+      return this._state
+    }
 }
 
-Student.prototype.getAverage = function () {
-  let sum = 0;
-  let length = this.marks.length;
-  for (let i = 0; i < length; i++) {
-    sum += this.marks[i];
-  }
-  return sum / length;
+class Magazine extends PrintEditionItem {
+    constructor (name, releaseDate, pagesCount) {
+      super(name, releaseDate, pagesCount);
+      this.type = "magazine";
+    }
+}
+  
+class Book extends PrintEditionItem {
+    constructor (author, name, releaseDate, pagesCount) {
+          super (name, releaseDate, pagesCount);
+          this.type = 'book';
+          this.author = author;
+    }
+}
+  
+class NovelBook extends Book {
+    constructor (author, name, releaseDate, pagesCount) {
+          super (author, name, releaseDate, pagesCount);
+          this.type = 'novel';
+    }
+}
+  
+class FantasticBook extends Book {
+    constructor (author, name, releaseDate, pagesCount) {
+          super (author, name, releaseDate, pagesCount);
+          this.type = 'fantastic';
+    }
+}
+  
+class DetectiveBook extends Book {
+    constructor (author, name, releaseDate, pagesCount) {
+          super (author, name, releaseDate, pagesCount);
+          this.type = 'detective';
+    }
 }
 
-Student.prototype.exclude = function (reason) {
-  this.excluded = reason;
 
-  delete this.marks;
-  delete this.subject;
+class Library {
+    constructor (name) {
+        this.name = name;
+        this.books = [];
+    }
+
+    addBook(book) {
+        if (book.state > 30) {
+            return this.books.push(book);
+        }
+        return;
+    }
+
+    findBookBy(type, value) {
+        let searchResult = this.books.find(book => book[type] === value);
+        return (typeof searchResult === 'object') ? searchResult : null; 
+    }
+        
+    giveBookByName(bookName) {
+       let reqBook = this.books.find(book => book.name === bookName);
+       if (typeof reqBook === 'object') {
+            this.books.splice(this.books.indexOf(reqBook), 1);
+            return reqBook;
+       }
+       else return null;
+    }
+     
 }
-
-
